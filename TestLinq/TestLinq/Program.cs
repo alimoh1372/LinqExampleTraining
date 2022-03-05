@@ -35,6 +35,7 @@ namespace TestLinq
                        }).ToList();
             string cityQuey = @"Select * From Cities;";
             sqlDaAd = new SqlDataAdapter(cityQuey, connection);
+            dt = new DataTable();
             sqlDaAd.Fill(dt);
 
             List<City> cities = new List<City>();
@@ -253,11 +254,29 @@ namespace TestLinq
 
             //}
 
+
+
+            ////using SImulate inner join in SQL SERVER
+            //string queryTest = @"select TOP 1 * From Persons p
+            //                     where p.Age=28";
+            //SqlDataAdapter dtAdTest = new SqlDataAdapter(queryTest, connection);
+            //DataTable dtTest = new DataTable();
+            //dtAdTest.Fill(dtTest);
+            //int j = 0;
+            //Console.WriteLine("\n\nthe dataTable information");
+            //foreach (DataRow p in dtTest.Rows)
+            //{
+            //    j++;
+            //    Console.WriteLine($"{j}:{p[0]}-{p[1]}-{p[2]}-{p[3]}-{p[4]}-{p[5]}-{p[6]}-{p[7]}\n");
+            //}
+
+
+
             //LINQ 
             var result = (from p in Persons
                           join c in cities
-                          on p.CtiyID equals c.ID
-                          select new { p.ID, p.Name, c.CityCodeNumber ,CityName=c.Name,CityID=c.ID}
+                          on p.CtiyID equals c.ID 
+                          select new {p.ID,p.Name, CityCodeNumber=c.CityCodeNumber,CityName=c.Name,CityID=c.ID}
                         ).ToList();
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("the result OF Linq   information");
@@ -269,14 +288,14 @@ namespace TestLinq
 
             }
             //Lambda Expression
-            var lambdaResult = Persons.Join(cities, p => p.CtiyID, c => c.ID, (p, c) => new {p.ID,p.Name,p.Family,p.CtiyID,cityIdInCity=c.ID,CityName=c.Name }).Distinct();
+            var lambdaResult = Persons.Join(cities, p => p.CtiyID, c => c.ID, (p, c) => c);
         Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("the result OF LAMBDA Expression  information");
             l = 0;
             foreach (var p in lambdaResult)
             {
                 l++;
-                Console.WriteLine($"{l}:{p.ID}-{p.Name}-{p.Family}-{p.CtiyID}-{p.cityIdInCity}-{p.CityName}\n");
+                Console.WriteLine($"{l}:{p.ID}-{p.Name}-\n");
 
             }
             var result1 = Persons.Distinct();
